@@ -2,29 +2,43 @@
 class mazebot:
     def __init__(self):
         # location of the boat
-        self.x = None
-        self.y = None
+        self.x = 1
+        self.y = 1
 
-        self.path = []
+        self.end_x = 3
+        self.end_y = 6
+
+        self.current_cell = []*2
+        self.visited_cells = []*2
 
         # location of maze
         self.maze = None
 
-    def move_right(self):
+    def move_right(self, node):
         self.x += 1
-        self.path.append('r')
+        self.current_cell[node][0] == self.x
+        self.current_cell[node][1] == self.y
 
-    def move_left(self):
+    def move_left(self, node):
         self.x-=1
-        self.path.append('l')
+        self.current_cell[node][0] == self.x
+        self.current_cell[node][1] == self.y
 
-    def move_up(self):
+    def move_up(self, node):
         self.y-=1
-        self.path.append('u')
+        self.current_cell[node][0] == self.x
+        self.current_cell[node][1] == self.y
 
-    def move_down(self):
+    def move_down(self, node):
         self.y += 1
-        self.path.append('d')
+        self.current_cell[node][0] == self.x
+        self.current_cell[node][1] == self.y
 
+    # def have_visited(self):
+#         pop current state  & compare ot see if have visited
+#          if haven't visited then add to visited set
+
+    def minimax(self):
+        self.move_right()
 
 
