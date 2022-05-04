@@ -3,8 +3,8 @@ from cell import Cell
 class Mazebot:
     def __init__(self):
         # location of the boat
-        self.x = 1
-        self.y = 1
+        self.start_x = 1
+        self.start_y = 1
 
         self.end_x = 3
         self.end_y = 6
@@ -38,6 +38,8 @@ class Mazebot:
             temp_row = []
             for col in range(len(int_maze[0])):
                 cell = Cell()
+                cell.x = row
+                cell.y = col
                 if (int_maze[row][col] == 1):
                     cell.wall = True
                 else:
@@ -64,32 +66,40 @@ class Mazebot:
             print("")
 
 
-
-
-
-    def move_right(self, node):
-        self.x += 1
-        self.current_cell[node][0] == self.x
-        self.current_cell[node][1] == self.y
-
-    def move_left(self, node):
-        self.x-=1
-        self.current_cell[node][0] == self.x
-        self.current_cell[node][1] == self.y
-
-    def move_up(self, node):
-        self.y-=1
-        self.current_cell[node][0] == self.x
-        self.current_cell[node][1] == self.y
-
-    def move_down(self, node):
-        self.y += 1
-        self.current_cell[node][0] == self.x
-        self.current_cell[node][1] == self.y
-
     # def have_visited(self):
 #         pop current state  & compare ot see if have visited
 #          if haven't visited then add to visited set
+    def BFS(self, maze):
+        to_visit = []
+        cell = maze[self.start_x][self.start_y]
+        while (not(cell.x == self.end_x and cell.y == self.end_y)):
+            # checking cell to the right
+            next_cell = maze[self.start_x + 1][self.start_y]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+
+           # checking cell below
+            next_cell = maze[self.start_][self.start_y - 1]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+
+            # checking cell to the left
+            next_cell = maze[self.start_x - 1][self.start_y]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+
+
+            # checking cell above
+            next_cell = maze[self.start_x][self.start_y - 1]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+
+            cell = to_visit.pop[0]
+
 
     def minimax(self):
         self.move_right()
