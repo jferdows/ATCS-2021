@@ -3,17 +3,18 @@ from cell import Cell
 class Mazebot:
     def __init__(self):
         # location of the boat
-        self.start_x = 1
-        self.start_y = 1
+        self.start_row = 1
+        self.start_col = 1
 
-        self.end_x = 3
-        self.end_y = 6
+        self.end_row = 3
+        self.end_col = 6
 
         self.current_cell = None
         self.poss_cells = []
 
         # array of maze
         self.maze = []
+        self.path = []
 
     # load the maze file
     # fill maze with cells
@@ -38,12 +39,19 @@ class Mazebot:
             temp_row = []
             for col in range(len(int_maze[0])):
                 cell = Cell()
-                cell.x = row
-                cell.y = col
+                cell.row = row
+                cell.col = col
                 if (int_maze[row][col] == 1):
                     cell.wall = True
                 else:
                     cell.wall = False
+                    if (int_maze[row][col] == 2):
+                        self.start_row = row
+                        self.start_col = col
+                        cell.is_in_path = True
+                    elif (int_maze[row][col] == 3):
+                        self.end_row = row
+                        self.end_col = col
                 temp_row.append(cell)
             self.maze.append(temp_row)
 
@@ -52,70 +60,75 @@ class Mazebot:
         for row in range(len(self.maze)):
             for col in range(len(self.maze[0])):
                 cell = self.maze[row][col]
-                if (cell.wall == True):
+                if (cell.row == self.current_cell.row and cell.col == self.current_cell.col):
+                    print("X", end="")
+                elif (cell.wall):
                     print("1", end="")
                 else:
                     print("0", end="")
-            print("")
+            print()
 
 
     def BFS(self, maze):
         to_visit = []
         path = []
-        cell = maze[self.start_x][self.start_y]
+        cell = maze[self.start_row][self.start_col]
 
-        while (not(cell.x == self.end_x and cell.y == self.end_y)):
+        while (not(cell.row == self.end_row and cell.col == self.end_col)):
 
-            # checking cell to the right
-            next_cell = maze[self.start_x + 1][self.start_y]
+            # checking cell below
+            next_cell = maze[cell.row + 1][cell.col]
             if (next_cell.visited == False and next_cell.wall == False):
                 to_visit.append(next_cell)
                 next_cell.parent = cell
                 cell.visited = True
 
-           # checking cell below
-            next_cell = maze[self.start_x][self.start_y - 1]
-            if (next_cell.visited == False and next_cell.wall == False):
-                to_visit.append(next_cell)
-                next_cell.parent = cell
-                cell.visited = True
-
-            # checking cell to the left
-            next_cell = maze[self.start_x - 1][self.start_y]
+           # checking cell to the left
+            next_cell = maze[cell.row][cell.col - 1]
             if (next_cell.visited == False and next_cell.wall == False):
                 to_visit.append(next_cell)
                 next_cell.parent = cell
                 cell.visited = True
 
             # checking cell above
-            next_cell = maze[self.start_x][self.start_y + 1]
+            next_cell = maze[cell.row - 1][cell.col]
             if (next_cell.visited == False and next_cell.wall == False):
                 to_visit.append(next_cell)
                 next_cell.parent = cell
                 cell.visited = True
 
-            cell = to_visit[0]
+            # checking cell to the right
+            next_cell = maze[cell.row][cell.col + 1]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+                cell.visited = True
+
+            cell = to_visit.pop(0)
+
 
         #getting x & y coordinates of cells of most efficient path
         i = 0
-        while(cell.parent.x != 1 and cell.parent.y != 1):
-            path[i][0] = cell.parent.x
-            path[i][1] = cell.parent.y
-            i+=1
-        return path
+        while(not(cell.row == self.start_row and cell.col == self.start_col)):
+            cell.is_in_path = True
+            self.path.append(cell)
+            cell = cell.parent
+        self.path.append(cell)
+
 
 
     def solve_maze(self):
-        path = self.BFS(self.maze)
-        for i in range(len(path)):
-                x_coord = path.pop[i][0]
-                y_coord = path.pop[i][1]
-                self.maze[x_coord][y_coord] = "X"
-                print(self.maze)
+        self.BFS(self.maze)
+        for i in range (len(self.path)-1, -1, -1):
+            self.current_cell = self.path[i]
+            self.print_maze()
+            print()
+
+
 
 
 if __name__ == '__main__':
     mazebot = Mazebot()
-    mazebot.load_maze("maze1.txt")
+    mazebot.load_maze("maze3.txt")
     mazebot.solve_maze()
 
