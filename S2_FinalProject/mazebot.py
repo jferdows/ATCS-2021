@@ -2,19 +2,11 @@ from cell import Cell
 
 class Mazebot:
     def __init__(self):
-        # location of the boat
-        self.start_row = 1
-        self.start_col = 1
-
-        self.end_row = 3
-        self.end_col = 6
-
         self.current_cell = None
-        self.poss_cells = []
 
-        # array of maze
         self.maze = []
         self.path = []
+
 
     # load the maze file
     # fill maze with cells
@@ -26,13 +18,11 @@ class Mazebot:
                 line = [int(char) for char in line]
                 int_maze.append(line)
                 line = f.readline().strip()
-        # print(int_maze)
-
         self.fill_maze_cells(int_maze)
 
 
-    # determining what spots in array are walls
     # adding cells to maze
+    # determines start & stop points in array & walls
     def fill_maze_cells(self, int_maze):
         # int_maze = mazebot.load_maze("maze1.txt")
         for row in range(len(int_maze)):
@@ -56,6 +46,7 @@ class Mazebot:
             self.maze.append(temp_row)
 
 
+    # prints maze
     def print_maze(self):
         for row in range(len(self.maze)):
             for col in range(len(self.maze[0])):
@@ -69,54 +60,45 @@ class Mazebot:
             print()
 
 
+    # implements breadth first search to traverse maze
     def BFS(self, maze):
         to_visit = []
-        path = []
         cell = maze[self.start_row][self.start_col]
 
         while (not(cell.row == self.end_row and cell.col == self.end_col)):
-
-            # checking cell below
-            next_cell = maze[cell.row + 1][cell.col]
-            if (next_cell.visited == False and next_cell.wall == False):
-                to_visit.append(next_cell)
-                next_cell.parent = cell
-                cell.visited = True
-
-           # checking cell to the left
-            next_cell = maze[cell.row][cell.col - 1]
-            if (next_cell.visited == False and next_cell.wall == False):
-                to_visit.append(next_cell)
-                next_cell.parent = cell
-                cell.visited = True
-
-            # checking cell above
-            next_cell = maze[cell.row - 1][cell.col]
-            if (next_cell.visited == False and next_cell.wall == False):
-                to_visit.append(next_cell)
-                next_cell.parent = cell
-                cell.visited = True
-
             # checking cell to the right
             next_cell = maze[cell.row][cell.col + 1]
             if (next_cell.visited == False and next_cell.wall == False):
                 to_visit.append(next_cell)
                 next_cell.parent = cell
                 cell.visited = True
-
+            # checking cell below
+            next_cell = maze[cell.row + 1][cell.col]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+                cell.visited = True
+           # checking cell to the left
+            next_cell = maze[cell.row][cell.col - 1]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+                cell.visited = True
+            # checking cell above
+            next_cell = maze[cell.row - 1][cell.col]
+            if (next_cell.visited == False and next_cell.wall == False):
+                to_visit.append(next_cell)
+                next_cell.parent = cell
+                cell.visited = True
             cell = to_visit.pop(0)
-
-
-        #getting x & y coordinates of cells of most efficient path
-        i = 0
+        #storing cells of most efficient path in array
         while(not(cell.row == self.start_row and cell.col == self.start_col)):
             cell.is_in_path = True
             self.path.append(cell)
             cell = cell.parent
         self.path.append(cell)
 
-
-
+    # prints mazebot's path in maze
     def solve_maze(self):
         self.BFS(self.maze)
         for i in range (len(self.path)-1, -1, -1):
@@ -129,6 +111,6 @@ class Mazebot:
 
 if __name__ == '__main__':
     mazebot = Mazebot()
-    mazebot.load_maze("maze3.txt")
+    mazebot.load_maze("maze1.txt")
     mazebot.solve_maze()
 
